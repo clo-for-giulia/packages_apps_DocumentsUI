@@ -83,6 +83,11 @@ public class PreBootReceiver extends BroadcastReceiver {
             return;
         }
 
+        final ComponentName launcherComponent = new ComponentName(packageName, LAUNCHER_TARGET_CLASS);
+        pm.setComponentEnabledSetting(launcherComponent,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
+
         setComponentEnabledByConfigResources(pm, packageName, LAUNCHER_TARGET_CLASS,
                 overlayPkg, overlayRes, CONFIG_IS_LAUNCHER_ENABLED);
         setComponentEnabledByConfigResources(pm, packageName, DOWNLOADS_TARGET_CLASS,
@@ -95,11 +100,9 @@ public class PreBootReceiver extends BroadcastReceiver {
         if (resId != 0) {
             final ComponentName component = new ComponentName(packageName, className);
             boolean enabled = overlayRes.getBoolean(resId);
-            if (VersionUtils.isAtLeastS() && !pm.hasSystemFeature(PackageManager.FEATURE_PC)
-                    && CONFIG_IS_LAUNCHER_ENABLED.equals(config)) {
-                // Devices using S+ that don't support the `FEATURE_PC` system feature should not
-                // show Files in the launcher.
-                enabled = false;
+            if (CONFIG_IS_LAUNCHER_ENABLED.equals(config)) {
+                // Ensure Files is visible in launcher
+                enabled = true;
             }
             if (DEBUG) {
                 Log.i(TAG,

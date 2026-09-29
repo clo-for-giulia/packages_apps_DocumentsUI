@@ -653,7 +653,7 @@ public class ActionHandler<T extends FragmentActivity & AbstractActionHandler.Co
 
     @Override
     protected void launchToDefaultLocation() {
-        loadHomeDir();
+        loadDeviceRoot();
     }
 
     @Override
@@ -785,12 +785,8 @@ public class ActionHandler<T extends FragmentActivity & AbstractActionHandler.Co
 
     @Override
     protected Uri getDefaultFallbackUri() {
-        Log.e(TAG, "Default Root URI is not a valid root URI, falling back to Downloads.");
-        return FlagUtils.isHomeScreenFilesFlagEnabled()
-                ? DocumentsContract.buildDocumentUri(
-                        Providers.AUTHORITY_STORAGE, Providers.DOWNLOAD_DOCUMENT_ID)
-                : DocumentsContract.buildRootUri(
-                        Providers.AUTHORITY_DOWNLOADS, Providers.ROOT_ID_DOWNLOADS);
+        return DocumentsContract.buildRootUri(
+                Providers.AUTHORITY_STORAGE, Providers.ROOT_ID_DEVICE);
     }
 
     private boolean launchToDownloads(Intent intent) {
